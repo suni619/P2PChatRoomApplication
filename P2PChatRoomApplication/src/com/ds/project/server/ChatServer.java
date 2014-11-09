@@ -70,8 +70,12 @@ public class ChatServer extends JFrame {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		System.out.println("Hi from Server");
+<<<<<<< HEAD
 		System.out.println("Success");
 
 		new ChatServer();
+=======
+		System.out.println("test");
+>>>>>>> branch 'master' of https://github.com/suni619/P2PChatRoomApplication.git
 	}
 }
