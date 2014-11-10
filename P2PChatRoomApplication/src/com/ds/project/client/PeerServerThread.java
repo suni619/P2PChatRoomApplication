@@ -19,12 +19,12 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class PeerServerThread extends Thread {
-	protected Socket clientSocket;
+	protected Socket peerClientSocket;
 	private static Map<String, Socket> clientSocketMap = new ConcurrentHashMap<String, Socket>();
 	//private static Map<String, Set<String>> chatRoomUsersMap = new ConcurrentHashMap<String, Set<String>>();
 
-	PeerServerThread(Socket clientSocket) {
-		this.clientSocket = clientSocket;
+	PeerServerThread(Socket peerClientSocket) {
+		this.peerClientSocket = peerClientSocket;
 	}
 
 	public void run() {
@@ -33,8 +33,13 @@ public class PeerServerThread extends Thread {
 		String[] inputMsg = new String[4];
 		String userName = "user"; // default username (not the case)
 		try {
-			inputStream = new DataInputStream(clientSocket.getInputStream());
-			outputStream = new DataOutputStream(clientSocket.getOutputStream());
+			inputStream = new DataInputStream(peerClientSocket.getInputStream());
+			outputStream = new DataOutputStream(peerClientSocket.getOutputStream());
+			
+			// receive chat room info from the peer clients
+			// receive peer info
+			// store peer info
+			
 			// read username and password
 			/*String authParam = inputStream.readUTF();
 

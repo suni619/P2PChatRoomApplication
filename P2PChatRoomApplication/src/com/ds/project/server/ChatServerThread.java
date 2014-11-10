@@ -44,8 +44,20 @@ public class ChatServerThread extends Thread {
 			String password = authParams[1];*/
 			
 			while(true) {
-				String msg = inputStream.readUTF();
-				System.out.println(msg);
+				// receive alive message
+				try {
+					String msg = inputStream.readUTF();
+					// read peer server info for the first time
+					// store peer server info
+					// send new peer server info to all other peers
+					
+					// read alive message subsequently
+					System.out.println(msg);
+				} catch (Exception e) {
+					System.out.println("Peer disconnected");
+					break;
+				}
+				
 			}
 			// authenticate (using information from the database)
 			//boolean authSuccess = authenticate(userName, password);

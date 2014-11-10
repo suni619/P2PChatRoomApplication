@@ -17,49 +17,49 @@ public class PeerServer extends JFrame {
 	JTextArea textArea = new JTextArea(5, 30);
 	JLabel lblServer = new JLabel("Server Activities");
 
-	public PeerServer() {
+	public PeerServer(String peerAddress, int peerPort) {
 		// TODO Auto-generated constructor stub
-		setSize(600, 400);
-		setVisible(true);
-		setTitle("SERVER");
-		add(textArea);
-
-		JScrollPane scrollPane = new JScrollPane(textArea);
-		scrollPane.setPreferredSize(new Dimension(335, 250));
-
-		textArea.setLineWrap(true);
-		textArea.setWrapStyleWord(true);
-		textArea.setEditable(false);
-		scrollPane
-				.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		textArea.setBounds(20, 20, 350, 250);
-
-		setLayout(new FlowLayout());
-		add(scrollPane, SwingConstants.CENTER);
+//		setSize(600, 400);
+//		setVisible(true);
+//		setTitle("SERVER");
+//		add(textArea);
+//
+//		JScrollPane scrollPane = new JScrollPane(textArea);
+//		scrollPane.setPreferredSize(new Dimension(335, 250));
+//
+//		textArea.setLineWrap(true);
+//		textArea.setWrapStyleWord(true);
+//		textArea.setEditable(false);
+//		scrollPane
+//				.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+//		textArea.setBounds(20, 20, 350, 250);
+//
+//		setLayout(new FlowLayout());
+//		add(scrollPane, SwingConstants.CENTER);
 		
 		
-		ServerSocket serverSocket = null;
-		Socket clientSocket = null;
+		ServerSocket peerServerSocket = null;
+		Socket peerClientSocket = null;
 
 		//System.out.println("Server started.");
-		textArea.append("Server started.");
+//		textArea.append("Server started.");
 
 		try {
-			// server starts at port 13000
-			serverSocket = new ServerSocket(13000);
+			// Peer server starts at port 13001
+			peerServerSocket = new ServerSocket(peerPort);
 			while (true) {
-				textArea.append("Waiting for connection...");
-				clientSocket = serverSocket.accept();
-				textArea.append("Connected from "
-						+ clientSocket.getInetAddress());
+//				textArea.append("Waiting for connection...");
+				peerClientSocket = peerServerSocket.accept();
+				System.out.println("Connected from "
+						+ peerClientSocket.getInetAddress());
 
-				new PeerServerThread(clientSocket).start();
+				new PeerServerThread(peerClientSocket).start();
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				serverSocket.close();
+				peerServerSocket.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -72,7 +72,7 @@ public class PeerServer extends JFrame {
 		System.out.println("Hi from Server");
 		System.out.println("Success");
 
-		new PeerServer();
+		new PeerServer("sample",13001);
 		System.out.println("test");
 	}
 }
