@@ -23,6 +23,9 @@ public class ChatServer extends JFrame {
 		setVisible(true);
 		setTitle("SERVER");
 		add(textArea);
+		lblServer.setBounds(5, 10, 100, 10);
+		add(lblServer);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 		JScrollPane scrollPane = new JScrollPane(textArea);
 		scrollPane.setPreferredSize(new Dimension(335, 250));

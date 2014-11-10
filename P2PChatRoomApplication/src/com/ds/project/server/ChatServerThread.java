@@ -18,9 +18,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.ds.project.entity.PeerInfo;
+
 public class ChatServerThread extends Thread {
 	protected Socket clientSocket;
-	private static Map<String, Socket> clientSocketMap = new ConcurrentHashMap<String, Socket>();
+	private static Map<String, PeerInfo> clientSocketMap = new ConcurrentHashMap<String, PeerInfo>();
 	//private static Map<String, Set<String>> chatRoomUsersMap = new ConcurrentHashMap<String, Set<String>>();
 
 	ChatServerThread(Socket clientSocket) {
@@ -47,12 +49,49 @@ public class ChatServerThread extends Thread {
 				// receive alive message
 				try {
 					String msg = inputStream.readUTF();
-					// read peer server info for the first time
-					// store peer server info
-					// send new peer server info to all other peers
+					String[] message = msg.split("delim");
+					//System.out.println("Msg from PeerCli " + msg);
+					//System.out.println("JOIN MESS " + message[2]);
+					if(message[2].equals("JOIN"))
+					{
+						//System.out.println("Inside JOIN");
+						// read peer server info for the first time
+						String[] peerSeverInfo = message[3].split(",");
+						String peerServerAddress = peerSeverInfo[0];
+						String peerServerPort = peerSeverInfo[1];
+						// store peer server info
+						
+						PeerInfo peerInfo = new PeerInfo();
+						peerInfo.setName(message[0]);
+						peerInfo.setAddress(peerServerAddress);
+						peerInfo.setPort(Integer.parseInt(peerServerPort));
+						peerInfo.setSocket(clientSocket);
+						clientSocketMap.put(message[0], peerInfo);
+						System.out.println("CS Map" + clientSocketMap);
+						// send new peer server info to all other peers
+						Set<String> mapKeys = clientSocketMap.keySet();
+						for (String user : mapKeys) {
+							System.out.println("User=" + user);
+							if(!user.equals(message[0])) {
+								PeerInfo peer = clientSocketMap.get(user);
+								System.out.println("Peer if" + peer);
+								Socket socketStream = peer.getSocket();
+								System.out.println("Socket STR:" + socketStream);
+								DataOutputStream outStream = new DataOutputStream(socketStream.getOutputStream());
+								System.out.println("DOS:" + outStream);
+							outStream.writeUTF("Server"+"delim"+user+"PEERJOIN"+"delim"+peerServerAddress+","+peerServerPort+"User Joined");
+							}
+							else {
+								System.out.println("Peer else");
+							}
+						}
+					}
+					else {
+						// read alive message subsequently
+						//System.out.println("ALIVE from " + message[0]);
+					}
 					
-					// read alive message subsequently
-					System.out.println(msg);
+					
 				} catch (Exception e) {
 					System.out.println("Peer disconnected");
 					break;

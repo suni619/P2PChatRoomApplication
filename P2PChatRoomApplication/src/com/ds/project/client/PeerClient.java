@@ -65,8 +65,8 @@ public class PeerClient extends JFrame {
 			final DataInputStream inStreamFromChatServer;
 
 			final String peerAddress = "localhost";
-			final int peerPort = 13001;
-			final String peerName = "user1";
+			final int peerPort = 13004;
+			final String peerName = "user4";
 			
 			InetAddress serverAddress = InetAddress.getByName(serverIp);
 			socket = new Socket(serverAddress, serverPort);
@@ -89,7 +89,7 @@ public class PeerClient extends JFrame {
 			peerServerThread.start();
 			
 			// send peer info (name, IP address and port)
-			outStreamToChatServer.writeUTF(peerName + "delim" + "Server" + "delim" + "JOIN" +
+			outStreamToChatServer.writeUTF(peerName + "delim" + "Server" + "delim" + "JOIN" + "delim" +
 					peerAddress + "," +	peerPort);
 			
 			// receive peer join/quit message from chat server
@@ -99,19 +99,22 @@ public class PeerClient extends JFrame {
 					// TODO Auto-generated method stub
 					// receive new peer join or peer quit information
 					try {
-						String inputMessageFromServer = inStreamFromChatServer.readUTF();
-						String[] inputMessage = inputMessageFromServer.split("delim");
-						String messageType = "";
-						String message = "";
-						if (messageType.equals("JOIN")){
-							// handle join
-							// send chat room info to newly connected peer
-							// retrieve chat room info from database
-							// connect to the peer server of newly connected peer
-							// send chat room info
-						} else {
-							// handle quit
-							// update chat room info locally
+						while(true){
+							String inputMessageFromServer = inStreamFromChatServer.readUTF();
+							String[] inputMessage = inputMessageFromServer.split("delim");
+							String messageType = "";
+							String message = "";
+							System.out.println("In Peer Cli MSG:" + inputMessageFromServer);
+							if (messageType.equals("JOIN")){
+								// handle join
+								// send chat room info to newly connected peer
+								// retrieve chat room info from database
+								// connect to the peer server of newly connected peer
+								// send chat room info
+							} else {
+								// handle quit
+								// update chat room info locally
+							}
 						}
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -124,7 +127,8 @@ public class PeerClient extends JFrame {
 			receiverThread.start();
 			
 			do {
-				outStreamToChatServer.writeUTF("Alive");
+				outStreamToChatServer.writeUTF(peerName + "delim" + "Server" + "delim" + "ALIVE" + "delim" +
+						peerAddress + "," +	peerPort);
 				Thread.sleep(2000);
 				
 			} while(true);			
