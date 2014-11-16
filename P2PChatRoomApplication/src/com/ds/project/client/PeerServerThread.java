@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class PeerServerThread extends Thread {
 	protected Socket peerClientSocket;
-	private static Map<String, Socket> clientSocketMap = new ConcurrentHashMap<String, Socket>();
+	public static Map<String, String> peerSocketMap = new ConcurrentHashMap<String, String>();
 	//private static Map<String, Set<String>> chatRoomUsersMap = new ConcurrentHashMap<String, Set<String>>();
 
 	PeerServerThread(Socket peerClientSocket) {
@@ -37,8 +37,18 @@ public class PeerServerThread extends Thread {
 			outputStream = new DataOutputStream(peerClientSocket.getOutputStream());
 			
 			// receive chat room info from the peer clients
+			String inputMsgFromPeerClient = inputStream.readUTF();
+			System.out.println("Rec Msg:" + inputMsgFromPeerClient);
+			String[] inputMsgFromPeerClientArray = inputMsgFromPeerClient.split("\\|");
+			String chatRooms = inputMsgFromPeerClientArray[0];
+			System.out.println("ChatRooms Info" + chatRooms);
 			// receive peer info
+			String peerInfo = inputMsgFromPeerClientArray[1];
+			System.out.println("Peer Info" + peerInfo);
 			// store peer info
+			String peerName = inputMsgFromPeerClientArray[2];
+			peerSocketMap.put(peerName,peerInfo);
+			
 			
 			// read username and password
 			/*String authParam = inputStream.readUTF();
@@ -48,10 +58,11 @@ public class PeerServerThread extends Thread {
 			userName = authParams[0];
 			String password = authParams[1];*/
 			
-			while(true) {
+			/*while(true) {
 				String msg = inputStream.readUTF();
 				System.out.println(msg);
-			}
+			}*/
+			
 			// authenticate (using information from the database)
 			//boolean authSuccess = authenticate(userName, password);
 

@@ -1,14 +1,20 @@
 package com.ds.project.client;
 
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 public class PeerClient extends JFrame {
 
@@ -102,18 +108,40 @@ public class PeerClient extends JFrame {
 						while(true){
 							String inputMessageFromServer = inStreamFromChatServer.readUTF();
 							String[] inputMessage = inputMessageFromServer.split("delim");
-							String messageType = "";
-							String message = "";
+							String incomingPeerName = inputMessage[0];
+							String messageType = inputMessage[2];
+							String message = inputMessage[3];
 							System.out.println("In Peer Cli MSG:" + inputMessageFromServer);
-							if (messageType.equals("JOIN")){
+							if (messageType.equals("PEERJOIN")){
 								// handle join
 								// send chat room info to newly connected peer
 								// retrieve chat room info from database
+								String chatRoomInfo = "ChatRoom1";
 								// connect to the peer server of newly connected peer
-								// send chat room info
-							} else {
+								String[] peerServerInfo = message.split(",");
+								String peerServerAdd = peerServerInfo[0];
+								int peerServerPort = Integer.parseInt(peerServerInfo[1]);
+								PeerServerThread.peerSocketMap.put(incomingPeerName,peerServerAdd+"-"+peerServerPort);
+								System.out.println("peerServerAdd: " + peerServerAdd + "peerServerPort:" + peerServerPort);
+								Socket peerServerSocket;
+								try {
+									peerServerSocket = new Socket(peerServerAdd, peerServerPort);
+									DataOutputStream outStreamToPeerServer = new DataOutputStream(peerServerSocket.getOutputStream());
+									// send chat room info and current peer info (address and port of this peer server)
+									outStreamToPeerServer.writeUTF(chatRoomInfo + "|" + peerAddress + "-" + peerPort + "|" + peerName);
+									peerServerSocket.close();
+								} catch (Exception e) {
+									System.out.println("Peer Server socket not created exception");
+									e.printStackTrace();
+								}
+								
+							} else if(messageType.equals("PEERQUIT")) {
 								// handle quit
 								// update chat room info locally
+								
+								// update peer info locally
+								PeerServerThread.peerSocketMap.remove(incomingPeerName);
+								System.out.println("Peer Removed: " + PeerServerThread.peerSocketMap);
 							}
 						}
 					} catch (IOException e) {

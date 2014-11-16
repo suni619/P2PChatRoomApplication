@@ -74,12 +74,12 @@ public class ChatServerThread extends Thread {
 							System.out.println("User=" + user);
 							if(!user.equals(message[0])) {
 								PeerInfo peer = clientSocketMap.get(user);
-								System.out.println("Peer if" + peer);
+								//System.out.println("Peer if" + peer);
 								Socket socketStream = peer.getSocket();
-								System.out.println("Socket STR:" + socketStream);
+								//System.out.println("Socket STR:" + socketStream);
 								DataOutputStream outStream = new DataOutputStream(socketStream.getOutputStream());
-								System.out.println("DOS:" + outStream);
-							outStream.writeUTF("Server"+"delim"+user+"PEERJOIN"+"delim"+peerServerAddress+","+peerServerPort+"User Joined");
+								//System.out.println("DOS:" + outStream);
+							outStream.writeUTF("Server"+"delim"+user+"delim"+"PEERJOIN"+"delim"+peerServerAddress+","+peerServerPort+"," + user + " Joined");
 							}
 							else {
 								System.out.println("Peer else");
